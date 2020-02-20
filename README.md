@@ -17,3 +17,12 @@ npm run build
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### 套件安裝
+@fortawesome/fontawesome-free
+bootstrap
+jquery
+popper
+axios
+vue-axios
+vue-multiselect
