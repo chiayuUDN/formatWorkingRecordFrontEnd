@@ -28,7 +28,7 @@
               >
               </multiselect>
             </div>
-            <div class="form-group col-12" v-if="value.type.Type_Name != null">
+            <div class="form-group col-12">
               <label>案名</label>
               <multiselect 
                 v-model="value.project"
@@ -42,7 +42,7 @@
                 @select="readItem"
               ></multiselect>
             </div>
-            <div class="form-group col-12" v-if="value.project.Project_Name != null">
+            <div class="form-group col-12">
               <label>工作項</label>
               <multiselect 
                 v-model="value.item"
@@ -76,25 +76,29 @@
               <label>問題建議</label>
                 <textarea v-model="suggestion" placeholder="沒有則填無" class="form-control"></textarea>
               </div>
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <label>內容</label>
                 <textarea v-model="content" class="form-control"></textarea>
-              </div>
+              </div> -->
             </div>
           </div>
         </form>
+        <button v-on:click="submit" class="btn btn-primary float-sm-right">確定</button>
       </div>
 
       <div class="col-md-6">
-        <!-- <pre class="language-json"><code>{{ value.type  }}</code></pre>
-        <pre class="language-json"><code>{{ value.project  }}</code></pre>
-        <pre class="language-json"><code>{{ value.item  }}</code></pre> -->
-        <!-- <pre class="language-json"><code>{{ value.employee  }}</code></pre> -->
         <h1 class="text-center">列表</h1>
         <!--年度資訊專案, BU專案(含SRC), 外部專案, 內部計畫-->
-        <div v-for="(options, index) in options.employee" :key="index" class="card border-primary mb-3">
-          {{ options.Employee_Name }}
+        <div v-for="(options, index) in options.type" :key="index" class="card border-primary mb-3">
+          <div class="card-header">{{options.Type_Name}}</div>
+          <div class="card-body text-dark">
+            <div v-for="(typeList, tidx) in typeLists[index]" :key="tidx">
+              {{typeList}}<span v-on:click="remove(index, tidx)"><a href="#" style="color: red;"><i class='fas fa-trash'></i></a></span>
+            </div>
+          </div>
         </div>
+        <!-- {{ typeLists }} -->
+        
       </div>
     </div>
   </div>
@@ -106,7 +110,6 @@ import Multiselect from 'vue-multiselect'
 import Vue from 'vue'
 import vueAxios from 'vue-axios'
 import axios from 'axios'
-import '../assets/js/managementApiUrl'
 import managementApiUrl from '../assets/js/managementApiUrl'
 // var managementApiUrl = require('../assets/js/managementApiUrl')
 
@@ -121,6 +124,7 @@ export default {
     return {
       date1: '',
       date2: '',
+      date: new Date().toISOString().substr(0, 10),
       isError: {
         date1:false,
       },
@@ -136,10 +140,7 @@ export default {
         item: [],
         employee: []
       },
-      items: [
-        { message: 'Foo' },
-        { message: 'Bar' }
-      ],
+      typeLists:[[],[],[],[],[],],
       schedule:'',
       suggestion: '',
       content: '',
@@ -155,6 +156,19 @@ export default {
   methods: {
     loading: () => {
     },
+    getDate: function(){
+			var date = '';
+			var date1 = this.date1.slice(5, 10);
+			var date2 = this.date2.slice(5, 10);
+			var weekday = ["日","一","二","三","四","五","六"];
+
+			if(this.date2 == "" || this.date1 == this.date2){
+				date = date1+'('+weekday[new Date(this.date1).getDay()]+')';	
+			}else{
+				date = date1+'~'+date2;
+			}
+			return date = date.replace(new RegExp("-","gm"),"/"); //replace all
+		},
     addProjectTag(newTag){
       this.value.item=[]
       const tag = {
@@ -212,6 +226,24 @@ export default {
         console.log('請求失敗')
       })
     },
+
+    submit: function(){
+      let employee = [];
+      this.value.employee.forEach((item) => {
+        employee.push(item.Employee_Name)
+      })
+      let data = '()' + this.getDate() + 
+                  '／' + this.value.project.Project_Name + 
+                  '／' + this.value.item.Item_Name + 
+                  '／' + employee.join("、") + 
+                  '／' + this.schedule + 
+                  '／' + (this.suggestion != "" ? this.suggestion: "無");
+
+      this.typeLists[this.value.type.Type_ID-1].push(data);
+    },
+    remove: function(index, tidx){
+      this.typeLists[index].splice(tidx, 1)
+		},
 	},
 }
 </script>
