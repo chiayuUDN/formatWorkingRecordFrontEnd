@@ -22,7 +22,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 @fortawesome/fontawesome-free
 bootstrap
 jquery
-popper
+popper.js
 axios
 vue-axios
 vue-multiselect
