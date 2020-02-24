@@ -93,11 +93,16 @@
           <div class="card-header">{{options.Type_Name}}</div>
           <div class="card-body text-dark">
             <div v-for="(typeList, tidx) in typeLists[index]" :key="tidx">
-              {{typeList}}<span v-on:click="remove(index, tidx)"><a href="#" style="color: red;"><i class='fas fa-trash'></i></a></span>
+              {{typeList}}
+              <span v-on:click="remove(index, tidx)">
+                <a href="#" style="color: red;">
+                <i class='fas fa-trash'></i></a></span>
+                <!-- <span v-on:click="edit(index, tidx)">
+                <a href="#" style="color: blue;"> 
+                <i class="fas fa-edit"></i></a></span> -->
             </div>
           </div>
         </div>
-        <!-- {{ typeLists }} -->
         
       </div>
     </div>
@@ -111,6 +116,7 @@ import Vue from 'vue'
 import vueAxios from 'vue-axios'
 import axios from 'axios'
 import managementApiUrl from '../assets/js/managementApiUrl'
+
 // var managementApiUrl = require('../assets/js/managementApiUrl')
 
 Vue.prototype.$ajax = axios
@@ -148,6 +154,7 @@ export default {
   },
   mounted: function(){
     this.loading();
+    this.setDate();
   },
   created(){
     this.readType();
@@ -156,6 +163,15 @@ export default {
   methods: {
     loading: () => {
     },
+    setDate: function(){
+			var aa = new Date();
+			var yyyy = aa.getFullYear();
+			var mm = aa.getMonth()+1;
+			var dd = aa.getDate();
+			if(mm<10){mm='0'+mm}
+			if(dd<10){dd='0'+dd}
+			this.date1 = yyyy+'-'+mm+'-'+dd;
+		},
     getDate: function(){
 			var date = '';
 			var date1 = this.date1.slice(5, 10);
@@ -240,10 +256,20 @@ export default {
                   '／' + (this.suggestion != "" ? this.suggestion: "無");
 
       this.typeLists[this.value.type.Type_ID-1].push(data);
-    },
+
+      //初始
+      this.personnel = '';
+      this.schedule = '';
+      this.suggestion = '';
+      this.cause = '';
+      this.content = '';
+  },
     remove: function(index, tidx){
       this.typeLists[index].splice(tidx, 1)
-		},
+    },
+    // edit: function(index, tidx){
+    //   console.log(this.typeLists[index][tidx])
+    // }
 	},
 }
 </script>
