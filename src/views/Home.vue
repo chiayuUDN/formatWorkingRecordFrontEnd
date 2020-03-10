@@ -23,7 +23,7 @@
                 label="Type_Name" 
                 track-by="Type_ID" 
                 :options="options.type" 
-                :multiple="false" 
+                :multiple="false"
                 @select="readProject"
               >
               </multiselect>
@@ -116,9 +116,7 @@ import Vue from 'vue'
 import vueAxios from 'vue-axios'
 import axios from 'axios'
 import managementApiUrl from '../assets/js/managementApiUrl'
-
-// var managementApiUrl = require('../assets/js/managementApiUrl')
-
+import sqlQuery from '../assets/js/sqlQuery'
 Vue.prototype.$ajax = axios
 
 export default {
@@ -150,10 +148,10 @@ export default {
       schedule:'',
       suggestion: '',
       content: '',
+      sqlQuery:sqlQuery,
     }
   },
   mounted: function(){
-    this.loading();
     this.setDate();
   },
   created(){
@@ -161,8 +159,6 @@ export default {
     this.readEmployee();
   },
   methods: {
-    loading: () => {
-    },
     setDate: function(){
 			var aa = new Date();
 			var yyyy = aa.getFullYear();
@@ -208,39 +204,47 @@ export default {
       this.value.push(tag)
     },
     readType: function(){
-      axios.post(managementApiUrl.read.type).then(response => {
-        this.options.type = response.data;
-      }, function(){
-        console.log('請求失敗')
-      })
+      sqlQuery.readType().then((res) => {
+        res.forEach((data) => {
+          if(data.isEnable == true)
+            this.options.type.push(data)
+        })
+			})
     },
     readProject: function(data) {
       this.value.project=[]
       this.value.item=[]
-      axios.post(managementApiUrl.read.project, {
-        FID: data.Type_ID,
-      }).then(response => {
-        this.options.project = response.data;
-      }, function(){
-        console.log('請求失敗')
-      })
+      sqlQuery.readProject(data).then((res) => {
+				if(res[0].msg == '無資料'){
+					console.log('類別為【', data.Type_Name ,'】沒有資料')
+        } else {
+					res.forEach((data) => {
+          if(data.isEnable == true)
+            this.options.project.push(data)
+          })
+        }
+			})
     },
     readItem: function(data) {
       this.value.item=[]
-      axios.post(managementApiUrl.read.item, {
-        FID: data.Project_ID,
-      }).then(response => {
-        this.options.item = response.data;
-      }, function(){
-        console.log('請求失敗')
-      })
+      sqlQuery.readItem(data).then((res) => {
+				if(res[0].msg == '無資料'){
+					console.log('案名為【', data.Project_Name ,'】沒有資料')
+        } else {
+          res.forEach((data) => {
+            if(data.isEnable == true)
+              this.options.item.push(data)
+          })
+        }
+			})
     },
     readEmployee: function(){
-      axios.post(managementApiUrl.read.employee).then(response => {
-        this.options.employee = response.data;
-      }, function(){
-        console.log('請求失敗')
-      })
+      sqlQuery.readEmployee().then((res) => {
+        res.forEach((data) => {
+          if(data.isEnable == true)
+            this.options.employee.push(data)
+        })
+			})
     },
 
     submit: function(){

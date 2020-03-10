@@ -17,6 +17,12 @@ const managementApiUrl = {
         type:    domain + '/api/delete/type',
         project: domain + '/api/delete/project',
         item:    domain + '/api/delete/item',
+    },
+    enableOpen: {
+        employee:domain + '/enableOpen/employee',
+        type:    domain + '/enableOpen/type',
+        project: domain + '/enableOpen/project',
+        item:    domain + '/enableOpen/item',
     }
 }
 

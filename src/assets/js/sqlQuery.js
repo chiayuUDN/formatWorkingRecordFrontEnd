@@ -3,7 +3,8 @@ import managementApiUrl from './managementApiUrl'
 
 let readErrorMSG  = '讀取失敗';
 let addErrorMSG   = '新增失敗';
-let deletErrorMSG = '刪除失敗'
+let deletErrorMSG = '刪除失敗';
+let enableOpenErrorMSG = 'enalbeOpen失敗';
 export default class sql {
 	static test(){
 		return '123'
@@ -73,40 +74,62 @@ export default class sql {
 		})
 	}
 	// 刪除
-	static deleteEmployee(name){
-		let data = { Name: name }
-		return axios.post(managementApiUrl.delete.employee, data).then(response => {
-			// alert(response.data[0].msg)
+	static deleteEmployee(data){
+		console.log(data)
+		return axios.post(managementApiUrl.delete.employee, { ID: data.Employee_ID, Name: data.Employee_Name }).then(response => {
 			return response.data;
 		}, function(){
 			console.log(deletErrorMSG)
 		})
 	}
-	static deleteType(name){
-		let data = { Name: name }
-		return axios.post(managementApiUrl.delete.type, data).then(response => {
-			// alert(response.data[0].msg)
+	static deleteType(data){
+		return axios.post(managementApiUrl.delete.type, { ID: data.Type_ID, Name: data.Type_Name }).then(response => {
 			return response.data;
 		}, function(){
 			console.log(deletErrorMSG)
 		})
 	}
-	static deleteProject(name){
-		let data = { Name: name }
-		return axios.post(managementApiUrl.delete.project, data).then(response => {
-			// alert(response.data[0].msg)
+	static deleteProject(data){
+		return axios.post(managementApiUrl.delete.project, { ID: data.Project_ID, Name: data.Project_Name }).then(response => {
 			return response.data;
 		}, function(){
 			console.log(deletErrorMSG)
 		})
 	}
-	static deleteItem(name){
-		let data = { Name: name }
-		return axios.post(managementApiUrl.delete.item, data).then(response => {
-			// alert(response.data[0].msg)
+	static deleteItem(data){
+		return axios.post(managementApiUrl.delete.item, { ID: data.Item_ID, Name: data.Item_Name }).then(response => {
 			return response.data;
 		}, function(){
 			console.log(deletErrorMSG)
+		})
+	}
+	// Enable全部打開
+	static enableOpenEmployee(){
+		return axios.post(managementApiUrl.enableOpen.employee).then(response => {
+			return 'Employee全打開';
+		}, function(){
+			console.log(enableOpenErrorMSG)
+		})
+	}
+	static enableOpenType(){
+		return axios.post(managementApiUrl.enableOpen.type).then(response => {
+			return 'Type全打開';
+		}, function(){
+			console.log(enableOpenErrorMSG)
+		})
+	}
+	static enableOpenProject(){
+		return axios.post(managementApiUrl.enableOpen.project).then(response => {
+			return 'Project全打開';
+		}, function(){
+			console.log(enableOpenErrorMSG)
+		})
+	}
+	static enableOpenItem(){
+		return axios.post(managementApiUrl.enableOpen.item).then(response => {
+			return 'Item全打開';
+		}, function(){
+			console.log(enableOpenErrorMSG)
 		})
 	}
 }

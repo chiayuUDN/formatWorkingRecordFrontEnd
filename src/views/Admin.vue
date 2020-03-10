@@ -11,12 +11,16 @@
 					</div>
 				</div>
 				<div class="selectArea style-7">
+					<div class="noData text-center" v-show="isNoData.type">
+						<i class="fas fa-folder-plus"></i>請新增類別名稱
+						<!-- <img src="../assets/img/noData.png" style="width:250px;" alt=""> -->
+					</div>
 					<div v-for="(options, index) in options.type" :key="index" @click="selectType(options)">
-						<div class="card" v-show="options.isEnable">
+						<div class="card">
 							<ul class="list-group list-group-flush">
 								<li :class="[{active: options.Type_ID == isActive.type.Type_ID}, 'list-group-item']" :title="options.Type_Name">
 									<span class="overflowWord"> {{options.Type_Name}} </span>
-									<span style="float:right;" @click="deleteType(options.Type_Name)"><a href="#" style="color: red;"><i class='fas fa-trash'></i></a></span>
+									<span style="float:right;" @click="deleteType(options)"><a href="#" style="color: red;"><i class='fas fa-trash'></i></a></span>
 								</li>
 							</ul>
 						</div>
@@ -32,12 +36,16 @@
 					</div>
 				</div>
 				<div class="selectArea style-7">
+					<div class="noData text-center" v-show="isNoData.project">
+						<i class="fas fa-folder-plus"></i>請新增案名名稱
+						<!-- <img src="../assets/img/noData.png" style="width:250px;" alt=""> -->
+					</div>
 					<div v-for="(options, index) in options.project" :key="index" @click="selectProject(options)">
-						<div class="card" v-show="options.isEnable">
+						<div class="card">
 							<ul class="list-group list-group-flush">
 								<li :class="[{active: options.Project_ID == isActive.project.Project_ID}, 'list-group-item']" :title="options.Project_Name">
 									<span class="overflowWord"> {{options.Project_Name}} </span>
-									<span style="float:right;" @click="deleteProject(options.Project_Name)"><a href="#" style="color: red;"><i class='fas fa-trash'></i></a></span>
+									<span style="float:right;" @click="deleteProject(options)"><a href="#" style="color: red;"><i class='fas fa-trash'></i></a></span>
 								</li>
 							</ul>
 						</div>
@@ -53,17 +61,22 @@
 					</div>
 				</div>
 				<div class="selectArea style-7">
+					<div class="noData text-center"  v-show="isNoData.item">
+						<i class="fas fa-folder-plus"></i>請新增工作項名稱
+						<!-- <img src="../assets/img/noData.png" style="width:250px;" alt=""> -->
+					</div>
 					<div v-for="(options, index) in options.item" :key="index" @click="selectItem(options)">
-						<div class="card" v-show="options.isEnable">
+						<div class="card">
 							<ul class="list-group list-group-flush">
 								<li :class="[{active: options.Item_ID == isActive.item.Item_ID}, 'list-group-item']" :title="options.Item_Name">
 									<span class="overflowWord"> {{options.Item_Name}} </span>
-									<span style="float:right;" @click="deleteItem(options.Item_Name)"><a href="#" style="color: red;"><i class='fas fa-trash'></i></a></span>
+									<span style="float:right;" @click="deleteItem(options)"><a href="#" style="color: red;"><i class='fas fa-trash'></i></a></span>
 								</li>
 							</ul>
 						</div>
 					</div>
 				</div>
+				
 			</div>
 		</div>
 		<div class="row">
@@ -76,29 +89,33 @@
 					</div>
 				</div>
 				<div class="selectArea style-7">
+					<div class="text-center" v-show="isNoData.employee" style="font-size: 30px;">
+						<i class="fas fa-user-plus" ></i>
+						請新增人員名稱
+					</div>
 					<div v-for="(options, index) in options.employee" :key="index" @click="selectEmployee(options)">
-						<div class="card" v-show="options.isEnable">
+						<div class="card">
 							<ul class="list-group list-group-flush">
 								<li :class="[{active: options.Employee_ID == isActive.employee.Employee_ID}, 'list-group-item']" :title="options.Employee_Name">
-									<span class="overflowWord"> {{options.Employee_Name}} </span>
-									<span style="float:right;" @click="deleteEmployee(options.Employee_Name)"><a href="#" style="color: red;"><i class='fas fa-trash'></i></a></span>
+									<span class="overflowWord"> {{options.Employee_ID}} - {{options.Employee_Name}} </span>
+									<span style="float:right;" @click="deleteEmployee(options)"><a href="#" style="color: red;"><i class='fas fa-trash'></i></a></span>
 								</li>
 							</ul>
 						</div>
 					</div>
 				</div>
 			</div>
+			<div class="col-4">
+				<button type="button" class="btn btn-primary btn-lg mb-3" @click="enableOpenAll">enable全打開</button>
+				<button type="button" class="btn btn-primary btn-lg mb-3" @click="resetAll">全部歸零重新設定</button>
+			</div>
 		</div>
+		
 		<!-- <div class="card border-primary mb-3">
 			<h1>測試</h1>
-			{{ sqlQuery.test() }}
+			{{ typeof(options.item) }}
 		</div> -->
-		<!-- <div class="testbox">
-			<span class="align-middle">測試</span>
-			<span class="align-baseline">baseline</span>
-
-		</div> -->
-
+		
 	</div>
 </template>
 <style lang="sass">
@@ -133,6 +150,9 @@
 
 	.card li
 		padding: 6px 12px;	
+
+	.noData
+		font-size: 30px;
 </style>
 <script>
 import sqlQuery from '../assets/js/sqlQuery'
@@ -145,12 +165,6 @@ export default {
 				project: [],
 				item: [],
 			},
-			// value: {
-			// 	employee: [],
-			// 	type: [],
-			// 	project: [],
-			// 	item: [],
-			// },
 			add: {
 				employeeName:'',
 				typeName:'',
@@ -163,6 +177,12 @@ export default {
 				project: [],
 				item: [],
 			},
+			isNoData: {
+				employee: true,
+				type: true,
+				project: true,
+				item: true,
+			},
 			sqlQuery:sqlQuery
 		}
 	},
@@ -174,45 +194,67 @@ export default {
 	methods: {
 		readEmployee: function(){
 			sqlQuery.readEmployee().then((res) => {
-				this.options.employee = res;
+				if(res[0].msg == '無資料'){
+					this.isNoData.employee = true
+					this.options.employee = []
+				} else {
+					this.isNoData.employee = false
+					this.options.employee = res;
+				}
 			})
 		},
 		readType: function(){
 			sqlQuery.readType().then((res) => {
-				this.options.type = res;
+				if(res[0].msg == '無資料'){
+					this.isNoData.type = true
+					this.options.type = []
+				} else {
+					this.isNoData.type = false
+					this.options.type = res;
+				}
 			})
 		},
 		readProject: function(data){
+			console.log('readProject', data)
 			sqlQuery.readProject(data).then((res) => {
-				if(res[0].msg == '無資料')
-					console.log('類別為【', data.Type_Name ,'】沒有資料')
-				else
+				if(res[0].msg == '無資料'){
+					// console.log('類別為【', data.Type_Name ,'】的案名沒有資料')
+					this.isNoData.project = true
+					this.options.project = []
+				} else {
+					this.isNoData.project = false
 					this.options.project = res
+				}
 			})
 		},
 		readItem: function(data){
+			console.log('readItem', data)
 			sqlQuery.readItem(data).then((res) => {
-				if(res[0].msg == '無資料')
-					console.log('案名為【', data.Project_Name ,'】沒有資料')
-				else
+				if(res[0].msg == '無資料'){
+					// console.log('案名為【', data.Project_Name ,'】的工作項沒有資料')
+					this.isNoData.item = true
+					this.options.item = []
+				} else {
+					this.isNoData.item = false
 					this.options.item = res
+				}
 			})
 		},
 		selectEmployee: function(data){
 			this.isActive.employee = data
 		},
 		selectType: function(data){
-			this.options.project = []
-			this.options.item = []
+			console.log('selectType', data)
 			this.isActive.type = data
 			this.readProject(data)
 		},
 		selectProject: function(data){
-			this.options.item = []
+			console.log('selectProject', data)
 			this.isActive.project = data
 			this.readItem(data)
 		},
 		selectItem: function(data){
+			console.log('selectItem', data)
 			this.isActive.item = data
 		},
 		addEmployee: function(name){
@@ -222,7 +264,8 @@ export default {
 					resolve(res[0].msg)
 				})
 			}).then((results) => {
-				this.readEmployee()	
+				this.add.employeeName = ''
+				this.readEmployee()
 			})
 		},
 		addType: function(name){
@@ -232,7 +275,9 @@ export default {
 					resolve(res[0].msg)
 				})
 			}).then((results) => {
-				this.readType()	
+				console.log('results', results)
+				this.add.typeName = ''
+				this.readType()
 			})
 		},
 		addProject: function(name){
@@ -246,6 +291,7 @@ export default {
 						resolve(res[0].msg)
 					})
 				}).then((results) => {
+					this.add.projectName = ''
 					this.readProject(this.isActive.type)	
 				})
 			}
@@ -261,50 +307,77 @@ export default {
 						resolve(res[0].msg)
 					})
 				}).then((results) => {
+					this.add.itemName = ''
 					this.readItem(this.isActive.project)	
 				})
 			}
 		},
-		
-		deleteEmployee: function(name){
+		deleteEmployee: function(data){
 			new Promise((resolve, reject) => {
-				sqlQuery.deleteEmployee(name).then((res) => {
+				sqlQuery.deleteEmployee(data).then((res) => {
 					alert(res[0].msg)
 					resolve(res[0].msg)
 				})
 			}).then((results) => {
+				this.isActive.employee = []
 				this.readEmployee();
 			})
 		},
-		deleteType: function(name){
+		deleteType: function(data){
 			new Promise((resolve, reject) => {
-				sqlQuery.deleteType(name).then((res) => {
+				sqlQuery.deleteType(data).then((res) => {
 					alert(res[0].msg)
 					resolve(res[0].msg)
 				})
 			}).then((results) => {
+				this.isActive.type = []
+
+				this.options.project = []
+				this.isNoData.project = true
+				this.isActive.project = []
+				
+				this.options.item = []
+				this.isNoData.item = true
+				this.isActive.item = []
 				this.readType();
+				
 			})
 		},
-		deleteProject: function(name){
+		deleteProject: function(data){
 			new Promise((resolve, reject) => {
-				sqlQuery.deleteProject(name).then((res) => {
+				sqlQuery.deleteProject(data).then((res) => {
 					alert(res[0].msg)
 					resolve(res[0].msg)
 				})
 			}).then((results) => {
+				this.isActive.project = []
+				
+				this.options.item = []
+				this.isNoData.item = true
+				this.isActive.item = []
 				this.readProject(this.isActive.type);
 			})
 		},
-		deleteItem: function(name){
+		deleteItem: function(data){
 			new Promise((resolve, reject) => {
-				sqlQuery.deleteItem(name).then((res) => {
+				sqlQuery.deleteItem(data).then((res) => {
 					alert(res[0].msg)
 					resolve(res[0].msg)
 				})
 			}).then((results) => {
+				this.isActive.item = []
 				this.readItem(this.isActive.project);
 			})
+		},
+		enableOpenAll: function(){
+			sqlQuery.enableOpenEmployee()
+			sqlQuery.enableOpenType()
+			sqlQuery.enableOpenProject()
+			sqlQuery.enableOpenItem()
+			location.reload();
+		},
+		resetAll: function(){
+
 		}
 
 	}
