@@ -89,17 +89,18 @@
       <div class="col-md-6">
         <h1 class="text-center">列表</h1>
         <!--年度資訊專案, BU專案(含SRC), 外部專案, 內部計畫-->
-        <div v-for="(options, index) in options.type" :key="index" class="card border-primary mb-3">
-          <div class="card-header">{{options.Type_Name}}</div>
-          <div class="card-body text-dark">
-            <div v-for="(typeList, tidx) in typeLists[index]" :key="tidx">
-              {{typeList}}
-              <span v-on:click="remove(index, tidx)">
-                <a href="#" style="color: red;">
-                <i class='fas fa-trash'></i></a></span>
-                <!-- <span v-on:click="edit(index, tidx)">
-                <a href="#" style="color: blue;"> 
-                <i class="fas fa-edit"></i></a></span> -->
+        <div v-for="(options, index) in options.type" :key="index">
+          <div v-show="typeLists[index].isDisplay" class="card border-primary mb-3" >
+            <div class="card-header">{{options.Type_Name}}</div>
+            <div class="card-body text-dark">
+              <div v-for="(typeList, tidx) in typeLists[index].data" :key="tidx">
+                {{typeList}}
+                <span @click="remove(index, tidx)">
+                  <a href="#" style="color:red;">
+                    <i class="fas fa-trash"></i>
+                  </a>
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -144,7 +145,7 @@ export default {
         item: [],
         employee: []
       },
-      typeLists:[[],[],[],[],[],],
+      typeLists:[],
       schedule:'',
       suggestion: '',
       content: '',
@@ -205,9 +206,13 @@ export default {
     },
     readType: function(){
       sqlQuery.readType().then((res) => {
+        this.options.type = res
         res.forEach((data) => {
-          if(data.isEnable == true)
-            this.options.type.push(data)
+          let list = {
+            isDisplay: false,
+            data:[],
+          }
+          this.typeLists.push(list)
         })
 			})
     },
@@ -218,10 +223,7 @@ export default {
 				if(res[0].msg == '無資料'){
 					console.log('類別為【', data.Type_Name ,'】沒有資料')
         } else {
-					res.forEach((data) => {
-          if(data.isEnable == true)
-            this.options.project.push(data)
-          })
+					this.options.project = res
         }
 			})
     },
@@ -231,10 +233,7 @@ export default {
 				if(res[0].msg == '無資料'){
 					console.log('案名為【', data.Project_Name ,'】沒有資料')
         } else {
-          res.forEach((data) => {
-            if(data.isEnable == true)
-              this.options.item.push(data)
-          })
+          this.options.item = res
         }
 			})
     },
@@ -259,8 +258,13 @@ export default {
                   '／' + this.schedule + 
                   '／' + (this.suggestion != "" ? this.suggestion: "無");
 
-      this.typeLists[this.value.type.Type_ID-1].push(data);
-
+      this.options.type.forEach((list, idx) => {
+        if(list.Type_ID == this.value.type.Type_ID) {
+          this.typeLists[idx].isDisplay = true
+          this.typeLists[idx].data.push(data)
+        }
+      })
+      
       //初始
       this.personnel = '';
       this.schedule = '';
@@ -269,7 +273,10 @@ export default {
       this.content = '';
   },
     remove: function(index, tidx){
-      this.typeLists[index].splice(tidx, 1)
+      this.typeLists[index].data.splice(tidx, 1)
+      if(this.typeLists[index].data == '') {
+        this.typeLists[index].isDisplay = false
+      }
     },
     // edit: function(index, tidx){
     //   console.log(this.typeLists[index][tidx])

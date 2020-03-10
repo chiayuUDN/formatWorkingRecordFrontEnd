@@ -2,7 +2,7 @@
 	<div>
 		<h1 class="text-center">Admin</h1>
 		<div class="row">
-			<div class="col-4">
+			<div class="col-md-4">
 				<h5>類別</h5>
 				<div class="input-group mb-3">
 					<input type="text" class="form-control" v-model="add.typeName" placeholder="新增類別名稱" aria-label="新增類別名稱" >
@@ -27,7 +27,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-4">
+			<div class="col-md-4">
 				<h5>案名</h5>
 				<div class="input-group mb-3">
 					<input type="text" class="form-control" v-model="add.projectName" placeholder="新增案名名稱" aria-label="新增案名名稱" >
@@ -52,7 +52,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-4">
+			<div class="col-md-4">
 				<h5>工作項</h5>
 				<div class="input-group mb-3">
 					<input type="text" class="form-control" v-model="add.itemName" placeholder="新增工作項名稱" aria-label="新增工作項名稱" >
@@ -78,9 +78,7 @@
 				</div>
 				
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-4">
+			<div class="col-md-4">
 				<h5>人員</h5>
 				<div class="input-group mb-3">
 					<input type="text" class="form-control" v-model="add.employeeName" placeholder="新增人員名稱" aria-label="新增人員名稱" >
@@ -105,11 +103,12 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-4">
-				<button type="button" class="btn btn-primary btn-lg mb-3" @click="enableOpenAll">enable全打開</button>
-				<button type="button" class="btn btn-primary btn-lg mb-3" @click="resetAll">全部歸零重新設定</button>
+			<div class="col-md-4">
+				<button type="button" class="btn btn-primary btn-lg btn-block mb-3" @click="enableOpenAll">enable全打開</button>
+				<button type="button" class="btn btn-primary btn-lg btn-block mb-3" @click="resetAll">全部歸零重新設定</button>
 			</div>
 		</div>
+		
 		
 		<!-- <div class="card border-primary mb-3">
 			<h1>測試</h1>
@@ -246,11 +245,22 @@ export default {
 		selectType: function(data){
 			console.log('selectType', data)
 			this.isActive.type = data
+
+			this.options.project = []
+			this.isActive.project = []
+
+			this.options.item = []
+			this.isActive.item = []
+
 			this.readProject(data)
 		},
 		selectProject: function(data){
 			console.log('selectProject', data)
 			this.isActive.project = data
+
+			this.options.item = []
+			this.isActive.item = []
+			
 			this.readItem(data)
 		},
 		selectItem: function(data){
@@ -281,12 +291,12 @@ export default {
 			})
 		},
 		addProject: function(name){
-			const ID = this.isActive.type.Type_ID
-			if (ID == null){
+			const FID = this.isActive.type.Type_ID
+			if (FID == null){
 				alert("請選擇類別")
 			} else {
 				new Promise((resolve, reject) => {
-					sqlQuery.addProject(name, ID).then((res) => {
+					sqlQuery.addProject(name, FID).then((res) => {
 						alert(res[0].msg)
 						resolve(res[0].msg)
 					})
@@ -297,12 +307,12 @@ export default {
 			}
 		},
 		addItem: function(name){
-			const ID = this.isActive.project.Project_ID
-			if (ID == null){
+			const FID = this.isActive.project.Project_ID
+			if (FID == null){
 				alert("請選擇案名")
 			} else {
 				new Promise((resolve, reject) => {
-					sqlQuery.addItem(name, ID).then((res) => {
+					sqlQuery.addItem(name, FID).then((res) => {
 						alert(res[0].msg)
 						resolve(res[0].msg)
 					})
