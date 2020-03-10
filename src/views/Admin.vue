@@ -387,7 +387,11 @@ export default {
 			location.reload();
 		},
 		resetAll: function(){
-
+			sqlQuery.resetEmployee()
+			sqlQuery.resetType()
+			sqlQuery.resetProject()
+			sqlQuery.resetItem()
+			location.reload();
 		}
 
 	}

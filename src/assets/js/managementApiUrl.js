@@ -23,6 +23,12 @@ const managementApiUrl = {
         type:    domain + '/enableOpen/type',
         project: domain + '/enableOpen/project',
         item:    domain + '/enableOpen/item',
+    },
+    reset: {
+        employee:domain + '/reset/employee',
+        type:    domain + '/reset/type',
+        project: domain + '/reset/project',
+        item:    domain + '/reset/item',
     }
 }
 
