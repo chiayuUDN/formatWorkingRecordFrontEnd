@@ -133,34 +133,41 @@ export default class sql {
 		})
 	}
 	//  Reset全部歸零
-	static resetEmployee(){
-		return axios.post(managementApiUrl.reset.employee).then(response => {
-			return 'Employee全歸零';
+	static resetAll(){
+		return axios.post(managementApiUrl.reset).then(response => {
+			return '資料表已全歸零';
 		}, function(){
 			console.log(enableOpenErrorMSG)
 		})
 	}
-	static resetType(){
-		return axios.post(managementApiUrl.reset.type).then(response => {
-			return 'Type全歸零';
-		}, function(){
-			console.log(enableOpenErrorMSG)
-		})
-	}
-	static resetProject(){
-		return axios.post(managementApiUrl.reset.project).then(response => {
-			return 'Project全歸零';
-		}, function(){
-			console.log(enableOpenErrorMSG)
-		})
-	}
-	static resetItem(){
-		return axios.post(managementApiUrl.reset.item).then(response => {
-			return 'Item全歸零';
-		}, function(){
-			console.log(enableOpenErrorMSG)
-		})
-	}
+	// static resetEmployee(){
+	// 	return axios.post(managementApiUrl.reset.employee).then(response => {
+	// 		return 'Employee全歸零';
+	// 	}, function(){
+	// 		console.log(enableOpenErrorMSG)
+	// 	})
+	// }
+	// static resetType(){
+	// 	return axios.post(managementApiUrl.reset.type).then(response => {
+	// 		return 'Type全歸零';
+	// 	}, function(){
+	// 		console.log(enableOpenErrorMSG)
+	// 	})
+	// }
+	// static resetProject(){
+	// 	return axios.post(managementApiUrl.reset.project).then(response => {
+	// 		return 'Project全歸零';
+	// 	}, function(){
+	// 		console.log(enableOpenErrorMSG)
+	// 	})
+	// }
+	// static resetItem(){
+	// 	return axios.post(managementApiUrl.reset.item).then(response => {
+	// 		return 'Item全歸零';
+	// 	}, function(){
+	// 		console.log(enableOpenErrorMSG)
+	// 	})
+	// }
 }
 
 // export default {data, readType, readProject}

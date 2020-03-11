@@ -13,7 +13,6 @@
 				<div class="selectArea style-7">
 					<div class="noData text-center" v-show="isNoData.type">
 						<i class="fas fa-folder-plus"></i>請新增類別名稱
-						<!-- <img src="../assets/img/noData.png" style="width:250px;" alt=""> -->
 					</div>
 					<div v-for="(options, index) in options.type" :key="index" @click="selectType(options)">
 						<div class="card">
@@ -38,7 +37,6 @@
 				<div class="selectArea style-7">
 					<div class="noData text-center" v-show="isNoData.project">
 						<i class="fas fa-folder-plus"></i>請新增案名名稱
-						<!-- <img src="../assets/img/noData.png" style="width:250px;" alt=""> -->
 					</div>
 					<div v-for="(options, index) in options.project" :key="index" @click="selectProject(options)">
 						<div class="card">
@@ -63,7 +61,6 @@
 				<div class="selectArea style-7">
 					<div class="noData text-center"  v-show="isNoData.item">
 						<i class="fas fa-folder-plus"></i>請新增工作項名稱
-						<!-- <img src="../assets/img/noData.png" style="width:250px;" alt=""> -->
 					</div>
 					<div v-for="(options, index) in options.item" :key="index" @click="selectItem(options)">
 						<div class="card">
@@ -88,10 +85,9 @@
 				</div>
 				<div class="selectArea style-7">
 					<div class="text-center" v-show="isNoData.employee" style="font-size: 30px;">
-						<i class="fas fa-user-plus" ></i>
-						請新增人員名稱
+						<i class="fas fa-user-plus" ></i>請新增人員名稱
 					</div>
-					<div v-for="(options, index) in options.employee" :key="index" @click="selectEmployee(options)">
+					<div v-for="(options) in options.employee" :key="options.time" @click="selectEmployee(options)">
 						<div class="card">
 							<ul class="list-group list-group-flush">
 								<li :class="[{active: options.Employee_ID == isActive.employee.Employee_ID}, 'list-group-item']" :title="options.Employee_Name">
@@ -104,11 +100,10 @@
 				</div>
 			</div>
 			<div class="col-md-4">
-				<button type="button" class="btn btn-primary btn-lg btn-block mb-3" @click="enableOpenAll">enable全打開</button>
-				<button type="button" class="btn btn-primary btn-lg btn-block mb-3" @click="resetAll">全部歸零重新設定</button>
+				<button type="button" class="btn btn-primary btn-lg btn-block mb-3" @click="enableOpenAlert">enable全打開</button>
+				<button type="button" class="btn btn-primary btn-lg btn-block mb-3" @click="resetAlsert" data-toggle="modal" data-target="#resetModal">全部歸零重新設定</button>
 			</div>
 		</div>
-		
 		
 		<!-- <div class="card border-primary mb-3">
 			<h1>測試</h1>
@@ -182,7 +177,13 @@ export default {
 				project: true,
 				item: true,
 			},
-			sqlQuery:sqlQuery
+			isAdd: {
+				employee: false,
+				type: false,
+				project: false,
+				item: false,
+			},
+			sqlQuery:sqlQuery,
 		}
 	},
 	
@@ -191,6 +192,9 @@ export default {
 		this.readType()	
 	},
 	methods: {
+		sortedByDate: function(x, y){
+			return new Date(x.time) - new Date(y.time)
+		},
 		readEmployee: function(){
 			sqlQuery.readEmployee().then((res) => {
 				if(res[0].msg == '無資料'){
@@ -198,7 +202,12 @@ export default {
 					this.options.employee = []
 				} else {
 					this.isNoData.employee = false
+					res.sort(this.sortedByDate)
 					this.options.employee = res;
+					if(this.isAdd.employee){ // 如果是新增的情況
+						this.isActive.employee = this.options.employee[this.options.employee.length-1]
+						this.isAdd.employee = false
+					}
 				}
 			})
 		},
@@ -209,7 +218,18 @@ export default {
 					this.options.type = []
 				} else {
 					this.isNoData.type = false
+					res.sort(this.sortedByDate)
 					this.options.type = res;
+					if(this.isAdd.type){
+						this.isActive.type = this.options.type[this.options.type.length-1]
+						this.isAdd.type = false
+
+						this.options.project = []
+						this.isActive.project = []
+
+						this.options.item = []
+						this.isActive.item = []
+					}
 				}
 			})
 		},
@@ -222,7 +242,15 @@ export default {
 					this.options.project = []
 				} else {
 					this.isNoData.project = false
+					res.sort(this.sortedByDate)
 					this.options.project = res
+					if(this.isAdd.project){
+						this.isActive.project = this.options.project[this.options.project.length-1]
+						this.isAdd.project = false
+
+						this.options.item = []
+						this.isActive.item = []
+					}
 				}
 			})
 		},
@@ -235,11 +263,17 @@ export default {
 					this.options.item = []
 				} else {
 					this.isNoData.item = false
+					res.sort(this.sortedByDate)
 					this.options.item = res
+					if(this.isAdd.item){
+						this.isActive.item = this.options.item[this.options.item.length-1]
+						this.isAdd.item = false
+					}
 				}
 			})
 		},
 		selectEmployee: function(data){
+			console.log('selectEmployee:',data)
 			this.isActive.employee = data
 		},
 		selectType: function(data){
@@ -275,6 +309,7 @@ export default {
 				})
 			}).then((results) => {
 				this.add.employeeName = ''
+				this.isAdd.employee = true;
 				this.readEmployee()
 			})
 		},
@@ -287,6 +322,7 @@ export default {
 			}).then((results) => {
 				console.log('results', results)
 				this.add.typeName = ''
+				this.isAdd.type = true;
 				this.readType()
 			})
 		},
@@ -302,7 +338,8 @@ export default {
 					})
 				}).then((results) => {
 					this.add.projectName = ''
-					this.readProject(this.isActive.type)	
+					this.isAdd.project = true;
+					this.readProject(this.isActive.type)
 				})
 			}
 		},
@@ -318,7 +355,8 @@ export default {
 					})
 				}).then((results) => {
 					this.add.itemName = ''
-					this.readItem(this.isActive.project)	
+					this.isAdd.item = true;
+					this.readItem(this.isActive.project)
 				})
 			}
 		},
@@ -380,18 +418,32 @@ export default {
 			})
 		},
 		enableOpenAll: function(){
-			sqlQuery.enableOpenEmployee()
-			sqlQuery.enableOpenType()
-			sqlQuery.enableOpenProject()
-			sqlQuery.enableOpenItem()
-			location.reload();
+			
 		},
-		resetAll: function(){
-			sqlQuery.resetEmployee()
-			sqlQuery.resetType()
-			sqlQuery.resetProject()
-			sqlQuery.resetItem()
-			location.reload();
+		enableOpenAlert: function(){
+			const yes = confirm('確定把已刪除過的項目開啟嗎?')
+			if (yes){
+				sqlQuery.enableOpenEmployee()
+				sqlQuery.enableOpenItem()
+				sqlQuery.enableOpenProject()
+				sqlQuery.enableOpenType()
+				location.reload();
+			} else {
+				console.log('enable取消')
+			}
+		},
+		resetAlsert: function(){
+			const yes = confirm('表格內資料將會全部清空，確定要全部歸零設定嗎?')
+			if (yes){
+				// sqlQuery.resetEmployee()
+				// sqlQuery.resetType()
+				// sqlQuery.resetProject()
+				// sqlQuery.resetItem()
+				sqlQuery.resetAll()
+				location.reload();
+			} else {
+				console.log('reset取消')
+			}
 		}
 
 	}

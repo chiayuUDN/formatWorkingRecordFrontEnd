@@ -24,12 +24,7 @@ const managementApiUrl = {
         project: domain + '/enableOpen/project',
         item:    domain + '/enableOpen/item',
     },
-    reset: {
-        employee:domain + '/reset/employee',
-        type:    domain + '/reset/type',
-        project: domain + '/reset/project',
-        item:    domain + '/reset/item',
-    }
+    reset: domain + '/reset',
 }
 
 export default managementApiUrl

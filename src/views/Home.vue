@@ -59,7 +59,6 @@
               <label>人員</label>
               <multiselect 
                 v-model="value.employee"
-                tag-placeholder="Add this as new tag"
                 placeholder="Search or add a tag"
                 label="Employee_Name" 
                 track-by="Employee_ID" 
@@ -201,8 +200,8 @@ export default {
       const tag = {
         Employee_Name: newTag,
       }
-      this.options.push(tag)
-      this.value.push(tag)
+      this.options.employee.push(tag)
+      this.value.employee.push(tag)
     },
     readType: function(){
       sqlQuery.readType().then((res) => {
