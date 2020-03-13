@@ -103,13 +103,7 @@
 				<button type="button" class="btn btn-primary btn-lg btn-block mb-3" @click="enableOpenAlert">enable全打開</button>
 				<button type="button" class="btn btn-primary btn-lg btn-block mb-3" @click="resetAlsert" data-toggle="modal" data-target="#resetModal">全部歸零重新設定</button>
 			</div>
-		</div>
-		
-		<!-- <div class="card border-primary mb-3">
-			<h1>測試</h1>
-			{{ typeof(options.item) }}
-		</div> -->
-		
+		</div>		
 	</div>
 </template>
 <style lang="sass">
