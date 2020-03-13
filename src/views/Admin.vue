@@ -103,6 +103,9 @@
 				<button type="button" class="btn btn-primary btn-lg btn-block mb-3" @click="enableOpenAlert">enable全打開</button>
 				<button type="button" class="btn btn-primary btn-lg btn-block mb-3" @click="resetAlsert" data-toggle="modal" data-target="#resetModal">全部歸零重新設定</button>
 			</div>
+			<!-- <div>
+				測試合併用
+			</div> -->
 		</div>		
 	</div>
 </template>
