@@ -165,19 +165,19 @@ export default {
 				projectName:'',
 				itemName:'',
 			},
-			isActive: {
+			isActive: { // 點選時，項目顯示顏色
 				employee: [],
 				type: [],
 				project: [],
 				item: [],
 			},
-			isNoData: {
+			isNoData: { // 判斷是否資料回傳為null的情況，true為是
 				employee: true,
 				type: true,
 				project: true,
 				item: true,
 			},
-			isAdd: {
+			isAdd: { // 判斷是否是新增情況，true為是；用於讓isActive指向新增的項目
 				employee: false,
 				type: false,
 				project: false,
@@ -225,9 +225,11 @@ export default {
 						this.isAdd.type = false
 
 						this.options.project = []
+						this.isNoData.project = true
 						this.isActive.project = []
 
 						this.options.item = []
+						this.isNoData.item = true
 						this.isActive.item = []
 					}
 				}
@@ -249,6 +251,7 @@ export default {
 						this.isAdd.project = false
 
 						this.options.item = []
+						this.isNoData.item = true
 						this.isActive.item = []
 					}
 				}
